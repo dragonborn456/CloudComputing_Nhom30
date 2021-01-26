@@ -28,7 +28,12 @@ Các thư mục bao gồm JavaCSharpCompiler và demo, file codetest.txt. Thư m
 Đưa file demo vào 1 đường dẫn bất kỳ trong máy tính.
 Ví dụ: Cho thư mục demo sẽ nằm trong thư mục Admin
 Địa chỉ đường dẫn = C:/Users/Admin/demo
-    
+
+### File index.html
+Lấy API Key ở trang sau: https://rapidapi.com/judge0-official/api/judge0-ce
+
+Sau khi có được API key, tìm đến dòng API_KEY = "" và thêm API Key vừa lấy được thêm vào.
+
 ### Thư mục JavaCSharpCompiler
 
 Chạy file .sln trong thư mục để chạy project Windows Form
