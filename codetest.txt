@@ -1,0 +1,57 @@
+C#:
+using System;
+
+namespace HelloWorld {
+    class Program {
+        static void Main(string[] args) {
+            Console.WriteLine("Hello World!");
+        }
+    }
+}
+-------------------------
+using System;
+
+namespace HelloWorld {
+    class Program {
+        static void Main(string[] args) {
+            int a = int.Parse(Console.ReadLine());
+            Console.WriteLine(a + 10);
+        }
+    }
+}
+------------------------------
+Java:
+class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
+}
+---------------------------------
+Java:
+import java.util.Scanner;
+
+class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int a = sc.nextInt();
+		System.out.println(a * 20);
+	}
+}
+------------------------------
+C#:
+Giai thừa C#
+using System;
+
+namespace Giaithua {
+    class Program {
+        static void Main(string[] args) {
+			int n = int.Parse(Console.ReadLine());
+			int answer = 1;
+			for (int i = 1; i <= n; i++) {
+				// answer *= i tương đương với answer = answer * i;
+				answer *= i;
+			}
+			Console.Write(answer);
+        }
+    }
+}
