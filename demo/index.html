@@ -1,0 +1,146 @@
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Compiler</title>
+</head>
+
+<body style="background-color: #33cccc; font-family: Times New Roman; margin: 9px;" >
+    <h2>Trang web Compile Code Online Phong An Khang<sub style="font-size: small;">
+
+    <h1>Code</h1>
+    <textarea id="source" style="width: calc(50% - 5px); height: 50%; resize: vertical;">
+using System;
+
+namespace HelloWorld {
+    class Program {
+        static void Main(string[] args) {
+            Console.WriteLine("Hello C#");
+        }
+    }
+}
+</textarea>
+
+    
+    <h2>Input</h2>
+    <textarea id="input" style="width: calc(50% - 5px); height: 20%; resize: vertical;"></textarea>
+
+    <h2>Choose your Language</h2>
+    <select id="lang">
+        <option selected>C#</option>
+        <option>Java</option>
+    </select>
+
+    </br></br>
+    <button id="run" onclick="run()">Compile</button>
+
+    <p style="width: 50%; text-align: left; position: absolute; color: #000000;">Chúc bạn code vui vẻ <a style="color: #000000; font-weight: bold;" href="https://github.com/hermanzdosilovic/online-compiler">APL</a>.</p>
+    <h2><h2>
+    <textarea readonly id="output" style="width: calc(50% - 5px); height: 80%; position: fixed; top: 0; right: 0; resize: none;">
+OUTPUT
+    </textarea>
+
+
+    <script type="text/javascript">
+        API_KEY = "dc19f92386msha9b8cf70cffe2cep1c527cjsn7bcce8adef3f"; // JUDGE0
+
+        var language_to_id = {
+            "Bash": 46,
+            "C": 50,
+            "C#": 51,
+            "C++": 54,
+            "Java": 62,
+            "Python": 71,
+            "Ruby": 72
+        };
+
+        function encode(str) {
+            return btoa(unescape(encodeURIComponent(str || "")));
+        }
+
+        function decode(bytes) {
+            var escaped = escape(atob(bytes || ""));
+            try {
+                return decodeURIComponent(escaped);
+            } catch {
+                return unescape(escaped);
+            }
+        }
+
+        function errorHandler(jqXHR, textStatus, errorThrown) {
+            $("#output").val(`${JSON.stringify(jqXHR, null, 4)}`);
+            $("#run").prop("disabled", false);
+        }
+
+        function check(token) {
+            $("#output").val($("#output").val() + "\nChecking submission status...");
+            $.ajax({
+                url: `https://judge0-ce.p.rapidapi.com/submissions/${token}?base64_encoded=true`,
+                type: "GET",
+                headers: {
+                    
+	                "x-rapidapi-key": API_KEY,
+                    "x-rapidapi-host": "judge0-ce.p.rapidapi.com"
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if ([1, 2].includes(data["status"]["id"])) {
+                        $("#output").val($("#output").val() + "\nStatus: " + data["status"]["description"]);
+                        setTimeout(function() { check(token) }, 1000);
+                    }
+                    else {
+                        var output = [decode(data["compile_output"]), decode(data["stdout"])].join("\n").trim();
+                        $("#output").val(output);
+                        $("#run").prop("disabled", false);
+                    }
+                },
+                error: errorHandler
+            });
+        }
+
+        function run() {
+            $("#run").prop("disabled", true);
+            $("#output").val("Creating submission...");
+            $.ajax({
+                url: "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    
+	                "x-rapidapi-key": API_KEY,
+                    "x-rapidapi-host": "judge0-ce.p.rapidapi.com"
+                },
+                data: JSON.stringify({
+                    "language_id": language_to_id[$("#lang").val()],
+                    "source_code": encode($("#source").val()),
+                    "stdin": encode($("#input").val()),
+                    "redirect_stderr_to_stdout": true
+                }),
+                success: function(data, textStatus, jqXHR) {
+                    $("#output").val($("#output").val() + "\nSubmission created.");
+                    setTimeout(function() { check(data["token"]) }, 1000);
+                },
+                error: errorHandler
+            });
+        }
+
+        $("body").keydown(function (e) {
+            if (e.ctrlKey && e.keyCode == 13) {
+                run();
+            }
+        });
+
+        $("textarea").keydown(function (e) {
+            if (e.keyCode == 9) {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+
+                var append = "    ";
+                $(this).val($(this).val().substring(0, start) + append + $(this).val().substring(end));
+
+                this.selectionStart = this.selectionEnd = start + append.length;
+            }
+        });
+
+        $("#source").focus();
+    </script>
+</body>
